@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Layout</title>
+    <style>
+        :root {
+            --background: #232323;
+            --text-color: #e2b714;
+            --sub-color: #646669;
+            --sub-alt-color: #2c2e31;
+            --primary: #e2b714;
+            --left-pinky: #ff6b6b;
+            --left-ring: #ff9e7d;
+            --left-middle: #ffda83;
+            --left-index: #9ee493;
+            --right-index: #57c4e5;
+            --right-middle: #7986cb;
+            --right-ring: #ba68c8;
+            --right-pinky: #f06292;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-color);
+            font-family: 'Roboto Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .keyboard {
+            background-color: var(--sub-alt-color);
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 850px;
+            width: 100%;
+        }
+        
+        .keyboard-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .key {
+            height: 50px;
+            width: 50px;
+            margin: 5px;
+            border-radius: 5px;
+            background-color: var(--sub-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .key.wide {
+            width: 100px;
+        }
+        
+        .key.extra-wide {
+            width: 150px;
+        }
+        
+        .key.space {
+            width: 300px;
+        }
+        
+        /* Finger color coding */
+        .key.left-pinky { background-color: var(--left-pinky); }
+        .key.left-ring { background-color: var(--left-ring); }
+        .key.left-middle { background-color: var(--left-middle); }
+        .key.left-index { background-color: var(--left-index); }
+        .key.right-index { background-color: var(--right-index); }
+        .key.right-middle { background-color: var(--right-middle); }
+        .key.right-ring { background-color: var(--right-ring); }
+        .key.right-pinky { background-color: var(--right-pinky); }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 10px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .key {
+                height: 40px;
+                width: 40px;
+                font-size: 14px;
+            }
+            
+            .key.wide {
+                width: 80px;
+            }
+            
+            .key.extra-wide {
+                width: 100px;
+            }
+            
+            .key.space {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="keyboard">
+        <h
