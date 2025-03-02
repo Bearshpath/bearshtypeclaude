@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finger Typing Practice</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Finger Typing Practice</h1>
+        </header>
+        
+        <div class="settings">
+            <div class="mode-selector">
+                <h2>Practice Mode</h2>
+                <div class="mode-buttons">
+                    <button class="mode-btn" data-mode="all">All Keys</button>
+                    <button class="mode-btn" data-mode="leftHand">Left Hand</button>
+                    <button class="mode-btn" data-mode="rightHand">Right Hand</button>
+                    <button class="mode-btn" data-mode="numbers">Number Row</button>
+                    <button class="mode-btn" data-mode="topRow">Top Row</button>
+                    <button class="mode-btn" data-mode="homeRow">Home Row</button>
+                    <button class="mode-btn" data-mode="bottomRow">Bottom Row</button>
+                </div>
+                <div class="finger-buttons">
+                    <h3>Finger Practice</h3>
+                    <div class="left-hand">
+                        <button class="finger-btn" data-finger="leftPinky">Left Pinky</button>
+                        <button class="finger-btn" data-finger="leftRing">Left Ring</button>
+                        <button class="finger-btn" data-finger="leftMiddle">Left Middle</button>
+                        <button class="finger-btn" data-finger="leftIndex">Left Index</button>
+                    </div>
+                    <div class="right-hand">
+                        <button class="finger-btn" data-finger="rightIndex">Right Index</button>
+                        <button class="finger-btn" data-finger="rightMiddle">Right Middle</button>
+                        <button class="finger-btn" data-finger="rightRing">Right Ring</button>
+                        <button class="finger-btn" data-finger="rightPinky">Right Pinky</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="time-selector">
+                <h3>Time (seconds)</h3>
+                <div class="time-buttons">
+                    <button class="time-btn" data-time="15">15</button>
+                    <button class="time-btn" data-time="30">30</button>
+                    <button class="time-btn" data-time="60" class="active">60</button>
+                    <button class="time-btn" data-time="120">120</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="typing-test">
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-name">wpm</div>
+                    <div class="stat-value" id="wpm">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-name">accuracy</div>
+                    <div class="stat-value" id="accuracy">100%</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-name">time</div>
+                    <div class="stat-value" id="time">60</div>
+                </div>
+            </div>
+            
+            <div class="test-container">
+                <div id="text-display" class="text-display"></div>
+                <input type="text" id="typing-input" class="typing-input" placeholder="Type here to start...">
+            </div>
+            
+            <div class="buttons">
+                <button id="restart-btn" class="restart-btn">Restart Test</button>
+            </div>
+        </div>
+        
+        <div class="results hidden" id="results">
+            <h2>Test Results</h2>
+            <div class="result-stats">
+                <div class="result-stat">
+                    <div class="result-stat-name">WPM</div>
+                    <div class="result-stat-value" id="result-wpm">0</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-stat-name">Accuracy</div>
+                    <div class="result-stat-value" id="result-accuracy">0%</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-stat-name">Characters</div>
+                    <div class="result-stat-value" id="result-chars">0/0</div>
+                </div>
+            </div>
+            <button id="new-test-btn" class="new-test-btn">New Test</button>
+        </div>
+        
+        <footer>
+            <p>Created for specialized finger and hand typing practice. Inspired by MonkeyType.</p>
+        </footer>
+    </div>
+    
+    <script src="keyboardMap.js"></script>
+    <script src="wordLists.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
