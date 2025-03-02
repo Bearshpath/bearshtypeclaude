@@ -1,0 +1,123 @@
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const TypingProgressChart = () => {
+  // Sample data - in a real implementation, this would come from localStorage or a database
+  const [progressData, setProgressData] = useState([
+    { date: '2023-03-01', wpm: 35, accuracy: 92 },
+    { date: '2023-03-02', wpm: 38, accuracy: 93 },
+    { date: '2023-03-03', wpm: 42, accuracy: 91 },
+    { date: '2023-03-04', wpm: 40, accuracy: 94 },
+    { date: '2023-03-05', wpm: 45, accuracy: 95 },
+    { date: '2023-03-06', wpm: 48, accuracy: 93 },
+    { date: '2023-03-07', wpm: 52, accuracy: 96 },
+  ]);
+
+  const [chartData, setChartData] = useState([]);
+  const [activeMetric, setActiveMetric] = useState('wpm');
+
+  useEffect(() => {
+    // Format the dates for display
+    const formattedData = progressData.map(entry => ({
+      ...entry,
+      displayDate: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    }));
+    setChartData(formattedData);
+  }, [progressData]);
+
+  // Add a new record (simulating after a test completion)
+  const addNewRecord = () => {
+    const lastWpm = progressData[progressData.length - 1].wpm;
+    const lastAccuracy = progressData[progressData.length - 1].accuracy;
+    
+    // Generate a random improvement (or decline)
+    const wpmChange = Math.floor(Math.random() * 10) - 3; // -3 to +7
+    const accuracyChange = Math.floor(Math.random() * 6) - 2; // -2 to +4
+    
+    const today = new Date();
+    const newRecord = {
+      date: today.toISOString().split('T')[0],
+      wpm: Math.max(25, lastWpm + wpmChange),
+      accuracy: Math.min(100, Math.max(70, lastAccuracy + accuracyChange))
+    };
+    
+    setProgressData([...progressData, newRecord]);
+  };
+
+  return (
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white">
+      <div className="mb-4 flex justify-between items-center">
+        <h2 className="text-xl font-bold text-yellow-400">Typing Progress Chart</h2>
+        <div className="flex gap-2">
+          <button 
+            className={`px-3 py-1 rounded ${activeMetric === 'wpm' ? 'bg-yellow-600' : 'bg-gray-700'}`}
+            onClick={() => setActiveMetric('wpm')}
+          >
+            WPM
+          </button>
+          <button 
+            className={`px-3 py-1 rounded ${activeMetric === 'accuracy' ? 'bg-yellow-600' : 'bg-gray-700'}`}
+            onClick={() => setActiveMetric('accuracy')}
+          >
+            Accuracy
+          </button>
+        </div>
+      </div>
+
+      <div className="h-64 w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+            <XAxis 
+              dataKey="displayDate" 
+              stroke="#aaa" 
+              tick={{ fill: '#aaa' }} 
+            />
+            <YAxis 
+              stroke="#aaa"
+              tick={{ fill: '#aaa' }}
+              domain={activeMetric === 'wpm' ? [0, 'auto'] : [50, 100]}
+            />
+            <Tooltip 
+              contentStyle={{ backgroundColor: '#333', border: '1px solid #555' }}
+            />
+            <Legend />
+            {activeMetric === 'wpm' ? (
+              <Line 
+                type="monotone" 
+                dataKey="wpm" 
+                name="WPM" 
+                stroke="#e2b714" 
+                activeDot={{ r: 8 }}
+                strokeWidth={2}
+              />
+            ) : (
+              <Line 
+                type="monotone" 
+                dataKey="accuracy" 
+                name="Accuracy %" 
+                stroke="#4ade80" 
+                activeDot={{ r: 8 }}
+                strokeWidth={2}
+              />
+            )}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="mt-4 flex justify-center">
+        <button 
+          onClick={addNewRecord}
+          className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded font-medium"
+        >
+          Simulate New Test Result
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default TypingProgressChart;
