@@ -40,6 +40,9 @@ function initTest() {
     totalChars = 0;
     currentIndex = 0;
     
+    // Reset used words when starting a new test with different mode
+    resetUsedWords();
+    
     // Generate text based on current mode
     const text = generatePracticeText(currentMode, textLength);
     
@@ -183,6 +186,10 @@ modeButtons.forEach(button => {
     button.addEventListener('click', () => {
         setActiveButton(modeButtons, button);
         currentMode = button.dataset.mode;
+        
+        // Update active classes on finger buttons
+        fingerButtons.forEach(btn => btn.classList.remove('active'));
+        
         initTest();
     });
 });
