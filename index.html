@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finger Typing Practice</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Finger Typing Practice</h1>
+            <p class="tagline">Improve your typing skills with targeted finger exercises</p>
         </header>
         
         <div class="settings">
@@ -19,7 +23,6 @@
                     <button class="mode-btn" data-mode="all">All Keys</button>
                     <button class="mode-btn" data-mode="leftHand">Left Hand</button>
                     <button class="mode-btn" data-mode="rightHand">Right Hand</button>
-                    <button class="mode-btn" data-mode="numbers">Number Row</button>
                     <button class="mode-btn" data-mode="topRow">Top Row</button>
                     <button class="mode-btn" data-mode="homeRow">Home Row</button>
                     <button class="mode-btn" data-mode="bottomRow">Bottom Row</button>
@@ -50,6 +53,8 @@
                     <button class="time-btn" data-time="120">120</button>
                 </div>
             </div>
+            
+            <div id="current-mode" class="current-mode">Current Mode: All Keys</div>
         </div>
         
         <div class="typing-test">
@@ -75,6 +80,7 @@
             
             <div class="buttons">
                 <button id="restart-btn" class="restart-btn">Restart Test</button>
+                <button id="keyboard-btn" class="keyboard-btn">Show Keyboard</button>
             </div>
         </div>
         
@@ -97,13 +103,104 @@
             <button id="new-test-btn" class="new-test-btn">New Test</button>
         </div>
         
+        <div class="progress-section hidden" id="progress-section">
+            <h2>Your Progress</h2>
+            <div class="progress-chart-container">
+                <div id="progress-chart" class="progress-chart"></div>
+                <div class="chart-controls">
+                    <button id="wpm-chart-btn" class="chart-btn active">WPM</button>
+                    <button id="accuracy-chart-btn" class="chart-btn">Accuracy</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="keyboard-guide hidden" id="keyboard-guide">
+            <h2>Keyboard Layout Guide</h2>
+            <div class="keyboard">
+                <!-- Number row -->
+                <div class="keyboard-row">
+                    <div class="key left-pinky">1</div>
+                    <div class="key left-ring">2</div>
+                    <div class="key left-middle">3</div>
+                    <div class="key left-index">4</div>
+                    <div class="key left-index">5</div>
+                    <div class="key right-index">6</div>
+                    <div class="key right-index">7</div>
+                    <div class="key right-middle">8</div>
+                    <div class="key right-ring">9</div>
+                    <div class="key right-pinky">0</div>
+                </div>
+                
+                <!-- Top row -->
+                <div class="keyboard-row">
+                    <div class="key left-pinky">Q</div>
+                    <div class="key left-ring">W</div>
+                    <div class="key left-middle">E</div>
+                    <div class="key left-index">R</div>
+                    <div class="key left-index">T</div>
+                    <div class="key right-index">Y</div>
+                    <div class="key right-index">U</div>
+                    <div class="key right-middle">I</div>
+                    <div class="key right-ring">O</div>
+                    <div class="key right-pinky">P</div>
+                </div>
+                
+                <!-- Home row -->
+                <div class="keyboard-row">
+                    <div class="key left-pinky">A</div>
+                    <div class="key left-ring">S</div>
+                    <div class="key left-middle">D</div>
+                    <div class="key left-index">F</div>
+                    <div class="key left-index">G</div>
+                    <div class="key right-index">H</div>
+                    <div class="key right-index">J</div>
+                    <div class="key right-middle">K</div>
+                    <div class="key right-ring">L</div>
+                    <div class="key right-pinky">;</div>
+                </div>
+                
+                <!-- Bottom row -->
+                <div class="keyboard-row">
+                    <div class="key left-pinky">Z</div>
+                    <div class="key left-ring">X</div>
+                    <div class="key left-middle">C</div>
+                    <div class="key left-index">V</div>
+                    <div class="key left-index">B</div>
+                    <div class="key right-index">N</div>
+                    <div class="key right-index">M</div>
+                    <div class="key right-middle">,</div>
+                    <div class="key right-ring">.</div>
+                    <div class="key right-pinky">/</div>
+                </div>
+                
+                <!-- Space bar -->
+                <div class="keyboard-row">
+                    <div class="key space">Space</div>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color left-pinky"></div>Left Pinky</div>
+                <div class="legend-item"><div class="legend-color left-ring"></div>Left Ring</div>
+                <div class="legend-item"><div class="legend-color left-middle"></div>Left Middle</div>
+                <div class="legend-item"><div class="legend-color left-index"></div>Left Index</div>
+                <div class="legend-item"><div class="legend-color right-index"></div>Right Index</div>
+                <div class="legend-item"><div class="legend-color right-middle"></div>Right Middle</div>
+                <div class="legend-item"><div class="legend-color right-ring"></div>Right Ring</div>
+                <div class="legend-item"><div class="legend-color right-pinky"></div>Right Pinky</div>
+            </div>
+            
+            <button id="hide-keyboard-btn" class="keyboard-btn">Hide Keyboard</button>
+        </div>
+        
         <footer>
-            <p>Created for specialized finger and hand typing practice. Inspired by MonkeyType.</p>
+            <p>Specialized finger and hand typing practice. <a href="#" id="progress-link">View Your Progress</a></p>
         </footer>
     </div>
     
     <script src="keyboardMap.js"></script>
     <script src="wordLists.js"></script>
+    <script src="progressChart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
