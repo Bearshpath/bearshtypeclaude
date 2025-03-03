@@ -2,33 +2,63 @@ import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const TypingProgressChart = () => {
-  // Sample data - in a real implementation, this would come from localStorage or a database
-  const [progressData, setProgressData] = useState([
-    { date: '2023-03-01', wpm: 35, accuracy: 92 },
-    { date: '2023-03-02', wpm: 38, accuracy: 93 },
-    { date: '2023-03-03', wpm: 42, accuracy: 91 },
-    { date: '2023-03-04', wpm: 40, accuracy: 94 },
-    { date: '2023-03-05', wpm: 45, accuracy: 95 },
-    { date: '2023-03-06', wpm: 48, accuracy: 93 },
-    { date: '2023-03-07', wpm: 52, accuracy: 96 },
-  ]);
+  // Get data from localStorage
+  const getStoredData = () => {
+    try {
+      const storedData = localStorage.getItem('typingProgress');
+      return storedData ? JSON.parse(storedData) : null;
+    } catch (error) {
+      console.error('Error loading progress data:', error);
+      return null;
+    }
+  };
+
+  // Initial state with sample data as fallback
+  const [progressData, setProgressData] = useState(() => {
+    const storedData = getStoredData();
+    return storedData || [
+      { date: '2023-03-01', wpm: 35, accuracy: 92, mode: 'all' },
+      { date: '2023-03-02', wpm: 38, accuracy: 93, mode: 'leftHand' },
+      { date: '2023-03-03', wpm: 42, accuracy: 91, mode: 'rightHand' },
+      { date: '2023-03-04', wpm: 40, accuracy: 94, mode: 'homeRow' },
+      { date: '2023-03-05', wpm: 45, accuracy: 95, mode: 'all' },
+      { date: '2023-03-06', wpm: 48, accuracy: 93, mode: 'all' },
+      { date: '2023-03-07', wpm: 52, accuracy: 96, mode: 'all' },
+    ];
+  });
 
   const [chartData, setChartData] = useState([]);
   const [activeMetric, setActiveMetric] = useState('wpm');
+  const [activeMode, setActiveMode] = useState('all');
+  
+  // List of available modes from the data
+  const [availableModes, setAvailableModes] = useState(['all']);
 
   useEffect(() => {
-    // Format the dates for display
+    // Format the dates for display and get available modes
     const formattedData = progressData.map(entry => ({
       ...entry,
       displayDate: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     }));
-    setChartData(formattedData);
-  }, [progressData]);
+    
+    // Extract unique modes
+    const modes = [...new Set(progressData.map(entry => entry.mode || 'all'))];
+    setAvailableModes(modes);
+    
+    // Filter by selected mode if applicable
+    const filteredData = activeMode === 'all' 
+      ? formattedData 
+      : formattedData.filter(entry => entry.mode === activeMode);
+    
+    setChartData(filteredData);
+  }, [progressData, activeMode]);
 
   // Add a new record (simulating after a test completion)
   const addNewRecord = () => {
-    const lastWpm = progressData[progressData.length - 1].wpm;
-    const lastAccuracy = progressData[progressData.length - 1].accuracy;
+    // Get WPM and accuracy from most recent test of the same mode
+    const lastEntry = progressData.filter(entry => entry.mode === activeMode).pop() || progressData[progressData.length - 1];
+    const lastWpm = lastEntry.wpm;
+    const lastAccuracy = lastEntry.accuracy;
     
     // Generate a random improvement (or decline)
     const wpmChange = Math.floor(Math.random() * 10) - 3; // -3 to +7
@@ -38,29 +68,74 @@ const TypingProgressChart = () => {
     const newRecord = {
       date: today.toISOString().split('T')[0],
       wpm: Math.max(25, lastWpm + wpmChange),
-      accuracy: Math.min(100, Math.max(70, lastAccuracy + accuracyChange))
+      accuracy: Math.min(100, Math.max(70, lastAccuracy + accuracyChange)),
+      mode: activeMode
     };
     
-    setProgressData([...progressData, newRecord]);
+    const updatedData = [...progressData, newRecord];
+    setProgressData(updatedData);
+    
+    // Save to localStorage
+    try {
+      localStorage.setItem('typingProgress', JSON.stringify(updatedData));
+    } catch (error) {
+      console.error('Error saving progress data:', error);
+    }
+  };
+
+  // Get color for different modes
+  const getModeColor = (mode) => {
+    const colors = {
+      'all': '#e2b714',
+      'leftHand': '#ff6b6b',
+      'rightHand': '#57c4e5',
+      'homeRow': '#9ee493',
+      'topRow': '#ba68c8',
+      'bottomRow': '#ff9e7d',
+      'leftPinky': '#ff6b6b',
+      'leftRing': '#ff9e7d',
+      'leftMiddle': '#ffda83',
+      'leftIndex': '#9ee493',
+      'rightIndex': '#57c4e5',
+      'rightMiddle': '#7986cb',
+      'rightRing': '#ba68c8',
+      'rightPinky': '#f06292'
+    };
+    
+    return colors[mode] || '#e2b714';
   };
 
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white">
-      <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-yellow-400">Typing Progress Chart</h2>
-        <div className="flex gap-2">
-          <button 
-            className={`px-3 py-1 rounded ${activeMetric === 'wpm' ? 'bg-yellow-600' : 'bg-gray-700'}`}
-            onClick={() => setActiveMetric('wpm')}
+      <div className="mb-4 flex flex-col md:flex-row justify-between items-center">
+        <h2 className="text-xl font-bold text-yellow-400 mb-2 md:mb-0">Typing Progress Chart</h2>
+        
+        <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 mr-4">
+            <button 
+              className={`px-3 py-1 rounded ${activeMetric === 'wpm' ? 'bg-yellow-600' : 'bg-gray-700'}`}
+              onClick={() => setActiveMetric('wpm')}
+            >
+              WPM
+            </button>
+            <button 
+              className={`px-3 py-1 rounded ${activeMetric === 'accuracy' ? 'bg-yellow-600' : 'bg-gray-700'}`}
+              onClick={() => setActiveMetric('accuracy')}
+            >
+              Accuracy
+            </button>
+          </div>
+          
+          <select 
+            className="bg-gray-700 text-white px-3 py-1 rounded"
+            value={activeMode}
+            onChange={(e) => setActiveMode(e.target.value)}
           >
-            WPM
-          </button>
-          <button 
-            className={`px-3 py-1 rounded ${activeMetric === 'accuracy' ? 'bg-yellow-600' : 'bg-gray-700'}`}
-            onClick={() => setActiveMetric('accuracy')}
-          >
-            Accuracy
-          </button>
+            <option value="all">All Modes</option>
+            {availableModes.map(mode => (
+              mode !== 'all' && <option key={mode} value={mode}>{mode.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -83,6 +158,14 @@ const TypingProgressChart = () => {
             />
             <Tooltip 
               contentStyle={{ backgroundColor: '#333', border: '1px solid #555' }}
+              formatter={(value, name, props) => {
+                // Display more info in tooltip
+                const entry = props.payload;
+                return [
+                  `${value} ${activeMetric === 'wpm' ? 'WPM' : '%'}`,
+                  entry.mode ? entry.mode.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()) : 'All'
+                ];
+              }}
             />
             <Legend />
             {activeMetric === 'wpm' ? (
@@ -90,7 +173,7 @@ const TypingProgressChart = () => {
                 type="monotone" 
                 dataKey="wpm" 
                 name="WPM" 
-                stroke="#e2b714" 
+                stroke={activeMode === 'all' ? '#e2b714' : getModeColor(activeMode)} 
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
@@ -99,7 +182,7 @@ const TypingProgressChart = () => {
                 type="monotone" 
                 dataKey="accuracy" 
                 name="Accuracy %" 
-                stroke="#4ade80" 
+                stroke={activeMode === 'all' ? '#4ade80' : getModeColor(activeMode)} 
                 activeDot={{ r: 8 }}
                 strokeWidth={2}
               />
@@ -113,8 +196,12 @@ const TypingProgressChart = () => {
           onClick={addNewRecord}
           className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded font-medium"
         >
-          Simulate New Test Result
+          Save Current Test Result
         </button>
+      </div>
+      
+      <div className="mt-4 text-sm text-gray-400 text-center">
+        Track your progress over time. Results are stored locally in your browser.
       </div>
     </div>
   );
