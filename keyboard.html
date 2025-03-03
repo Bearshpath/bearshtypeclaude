@@ -132,4 +132,147 @@
 </head>
 <body>
     <div class="keyboard">
-        <h
+        <h1 class="keyboard-title">Keyboard Finger Placement</h1>
+        
+        <!-- Number row -->
+        <div class="keyboard-row">
+            <div class="key left-pinky">1</div>
+            <div class="key left-ring">2</div>
+            <div class="key left-middle">3</div>
+            <div class="key left-index">4</div>
+            <div class="key left-index">5</div>
+            <div class="key right-index">6</div>
+            <div class="key right-index">7</div>
+            <div class="key right-middle">8</div>
+            <div class="key right-ring">9</div>
+            <div class="key right-pinky">0</div>
+        </div>
+        
+        <!-- Top row -->
+        <div class="keyboard-row">
+            <div class="key left-pinky">Q</div>
+            <div class="key left-ring">W</div>
+            <div class="key left-middle">E</div>
+            <div class="key left-index">R</div>
+            <div class="key left-index">T</div>
+            <div class="key right-index">Y</div>
+            <div class="key right-index">U</div>
+            <div class="key right-middle">I</div>
+            <div class="key right-ring">O</div>
+            <div class="key right-pinky">P</div>
+        </div>
+        
+        <!-- Home row -->
+        <div class="keyboard-row">
+            <div class="key left-pinky">A</div>
+            <div class="key left-ring">S</div>
+            <div class="key left-middle">D</div>
+            <div class="key left-index">F</div>
+            <div class="key left-index">G</div>
+            <div class="key right-index">H</div>
+            <div class="key right-index">J</div>
+            <div class="key right-middle">K</div>
+            <div class="key right-ring">L</div>
+            <div class="key right-pinky">;</div>
+        </div>
+        
+        <!-- Bottom row -->
+        <div class="keyboard-row">
+            <div class="key left-pinky">Z</div>
+            <div class="key left-ring">X</div>
+            <div class="key left-middle">C</div>
+            <div class="key left-index">V</div>
+            <div class="key left-index">B</div>
+            <div class="key right-index">N</div>
+            <div class="key right-index">M</div>
+            <div class="key right-middle">,</div>
+            <div class="key right-ring">.</div>
+            <div class="key right-pinky">/</div>
+        </div>
+        
+        <!-- Space bar row -->
+        <div class="keyboard-row">
+            <div class="key space">Space</div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--left-pinky);"></div>
+                <span>Left Pinky</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--left-ring);"></div>
+                <span>Left Ring</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--left-middle);"></div>
+                <span>Left Middle</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--left-index);"></div>
+                <span>Left Index</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--right-index);"></div>
+                <span>Right Index</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--right-middle);"></div>
+                <span>Right Middle</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--right-ring);"></div>
+                <span>Right Ring</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--right-pinky);"></div>
+                <span>Right Pinky</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript to make the keyboard interactive
+        document.querySelectorAll('.key').forEach(key => {
+            key.addEventListener('click', () => {
+                // Get the key character
+                const keyChar = key.textContent.toLowerCase();
+                // Alert which finger and hand should be used
+                let finger = '';
+                let hand = '';
+                
+                if (key.classList.contains('left-pinky')) {
+                    finger = 'Left Pinky';
+                    hand = 'Left Hand';
+                } else if (key.classList.contains('left-ring')) {
+                    finger = 'Left Ring';
+                    hand = 'Left Hand';
+                } else if (key.classList.contains('left-middle')) {
+                    finger = 'Left Middle';
+                    hand = 'Left Hand';
+                } else if (key.classList.contains('left-index')) {
+                    finger = 'Left Index';
+                    hand = 'Left Hand';
+                } else if (key.classList.contains('right-index')) {
+                    finger = 'Right Index';
+                    hand = 'Right Hand';
+                } else if (key.classList.contains('right-middle')) {
+                    finger = 'Right Middle';
+                    hand = 'Right Hand';
+                } else if (key.classList.contains('right-ring')) {
+                    finger = 'Right Ring';
+                    hand = 'Right Hand';
+                } else if (key.classList.contains('right-pinky')) {
+                    finger = 'Right Pinky';
+                    hand = 'Right Hand';
+                }
+                
+                if (finger && hand) {
+                    alert(`Key: ${keyChar}\nFinger: ${finger}\nHand: ${hand}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
