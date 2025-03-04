@@ -24,29 +24,30 @@ let correctChars = 0;
 let incorrectChars = 0;
 let totalChars = 0;
 let currentIndex = 0;
+let testEnded = false;
 
 // Current settings
 let currentMode = 'all';
 let testDuration = 60; // seconds
 let textLength = 200; // characters
 
+// Add variable to track Tab press
+let tabPressedRecently = false;
+
 // Initialize the test
 function initTest() {
-    // Clear previous state
     clearInterval(timerInterval);
     testActive = false;
+    testEnded = false;
     correctChars = 0;
     incorrectChars = 0;
     totalChars = 0;
     currentIndex = 0;
     
-    // Reset used words when starting a new test with different mode
     resetUsedWords();
     
-    // Generate text based on current mode
     const text = generatePracticeText(currentMode, textLength);
     
-    // Set up text display
     textDisplay.innerHTML = '';
     for (let i = 0; i < text.length; i++) {
         const charSpan = document.createElement('span');
@@ -56,16 +57,13 @@ function initTest() {
         textDisplay.appendChild(charSpan);
     }
     
-    // Reset stats
     wpmDisplay.textContent = '0';
     accuracyDisplay.textContent = '100%';
     timeDisplay.textContent = testDuration;
     
-    // Clear input
     typingInput.value = '';
     typingInput.focus();
     
-    // Hide results
     resultsDiv.classList.add('hidden');
 }
 
@@ -88,13 +86,10 @@ function startTimer() {
 
 // Update WPM and accuracy stats
 function updateStats(elapsedTime) {
-    // Calculate WPM: (characters typed / 5) / minutes elapsed
-    // 5 characters is the standard word length for WPM calculation
     const minutes = elapsedTime / 60;
     const wpm = Math.round(correctChars / 5 / (minutes || 1));
     wpmDisplay.textContent = wpm;
     
-    // Calculate accuracy
     const accuracy = Math.round(
         (correctChars / (correctChars + incorrectChars || 1)) * 100
     );
@@ -105,6 +100,7 @@ function updateStats(elapsedTime) {
 function endTest() {
     clearInterval(timerInterval);
     testActive = false;
+    testEnded = true;
     
     const elapsedTime = Math.floor((new Date() - startTime) / 1000) || 1;
     const minutes = elapsedTime / 60;
@@ -113,14 +109,12 @@ function endTest() {
         (correctChars / (correctChars + incorrectChars || 1)) * 100
     );
     
-    // Display results
     resultWpm.textContent = wpm;
     resultAccuracy.textContent = `${accuracy}%`;
     resultChars.textContent = `${correctChars}/${correctChars + incorrectChars}`;
     
     resultsDiv.classList.remove('hidden');
     
-    // Disable typing
     typingInput.blur();
 }
 
@@ -129,18 +123,14 @@ typingInput.addEventListener('input', (e) => {
     const chars = textDisplay.querySelectorAll('.char');
     const typedValue = e.target.value;
     
-    // Start test on first input
     if (!testActive && typedValue.length === 1) {
         testActive = true;
         startTimer();
     }
     
-    // Check each character
     chars.forEach((char, index) => {
-        // Reset classes
         char.classList.remove('correct', 'incorrect', 'current');
         
-        // Add appropriate class based on typing
         if (index < typedValue.length) {
             if (char.textContent === typedValue[index]) {
                 char.classList.add('correct');
@@ -152,9 +142,7 @@ typingInput.addEventListener('input', (e) => {
         }
     });
     
-    // Calculate correct and incorrect characters
     if (typedValue.length > currentIndex) {
-        // User typed a new character
         const newChar = typedValue[typedValue.length - 1];
         const expectedChar = chars[typedValue.length - 1].textContent;
         
@@ -163,13 +151,10 @@ typingInput.addEventListener('input', (e) => {
         } else {
             incorrectChars++;
         }
-    } else if (typedValue.length < currentIndex) {
-        // User deleted characters - no need to update stats
     }
     
     currentIndex = typedValue.length;
     
-    // End test if all text is typed
     if (typedValue.length === chars.length) {
         endTest();
     }
@@ -187,7 +172,6 @@ modeButtons.forEach(button => {
         setActiveButton(modeButtons, button);
         currentMode = button.dataset.mode;
         
-        // Update active classes on finger buttons
         fingerButtons.forEach(btn => btn.classList.remove('active'));
         
         initTest();
@@ -226,23 +210,31 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Focus input on tab presses
+// Handle Tab then Enter sequence like Monkeytype
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Tab') {
+    if (e.key === 'Tab' && testEnded) {
         e.preventDefault();
         typingInput.focus();
+        tabPressedRecently = true;
+        // Reset tabPressedRecently after 1 second
+        setTimeout(() => {
+            tabPressedRecently = false;
+        }, 1000);
+    }
+    
+    if (e.key === 'Enter' && testEnded && tabPressedRecently) {
+        e.preventDefault();
+        initTest();
+        tabPressedRecently = false; // Reset immediately after starting new test
     }
 });
 
 // Initialize the test when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Set default active buttons
     document.querySelector('[data-mode="all"]').classList.add('active');
     document.querySelector('[data-time="60"]').classList.add('active');
     
-    // Initialize the first test
     initTest();
     
-    // Focus the input
     typingInput.focus();
 });
